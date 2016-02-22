@@ -1,9 +1,10 @@
 FROM jgeiger/alpine
 MAINTAINER jgeiger@gmail.com
 
-ENV CONSUL_VERSION 0.6.3
+ENV CONSUL_VERSION=0.6.3 \
+    GLIBC_VERSION=2.22-r8
 ENV CONSUL_FILE=consul_${CONSUL_VERSION}_linux_amd64.zip \
-                GLIBC_FILE=glibc-2.21-r2.apk
+    GLIBC_FILE=glibc-${GLIBC_VERSION}.apk
 
 VOLUME [ "/data", "/config" ]
 
@@ -11,8 +12,8 @@ RUN addgroup -S consul && adduser -S -G consul consul \
       && apk add --update \
       curl \
       openssl \
-      && curl -Ls https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/$GLIBC_FILE > /tmp/$GLIBC_FILE \
-      && apk add --allow-untrusted /tmp/$GLIBC_FILE \
+      && curl -Ls https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/${GLIBC_FILE} > /tmp/${GLIBC_FILE} \
+      && apk add --allow-untrusted /tmp/${GLIBC_FILE} \
       && curl -o $CONSUL_FILE -sSL https://releases.hashicorp.com/consul/$CONSUL_VERSION/$CONSUL_FILE \
       && unzip $CONSUL_FILE \
       && mv consul /usr/local/bin/ \
