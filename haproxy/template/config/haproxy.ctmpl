@@ -1,0 +1,50 @@
+global
+  log 127.0.0.1    local0
+  log 127.0.0.1    local1 notice
+  maxconn {{key_or_default "service/haproxy/maxconn" "4096"}}
+  chroot /var/lib/haproxy
+  user haproxy
+  group haproxy
+  tune.ssl.default-dh-param 2048
+  debug
+  stats timeout 30s
+
+defaults
+  log global
+  mode http
+  option tcplog
+  option dontlognull
+  option redispatch
+  retries                 3
+  timeout http-request    10s
+  timeout queue           1m
+  timeout connect         10s
+  timeout client          1m
+  timeout server          1m
+  timeout http-keep-alive 10s
+  timeout check           10s
+  maxconn                 3000
+
+#stats
+listen stats
+  bind 0.0.0.0:8080
+  mode http
+  stats enable
+  stats hide-version
+  stats realm Haproxy\ Statistics
+  stats uri /
+  stats auth stats:stats
+
+frontend https
+  bind 0.0.0.0:443 ssl crt /etc/ssl/private/server.pem
+  reqadd X-Forwarded-Proto:\ https
+  default_backend webapp
+
+backend webapp
+  balance roundrobin
+  option forwardfor header X-Real-IP
+  option http-server-close
+  option httplog
+  {{range service "webapp"}}
+  server {{.ID}} {{.Address}}:{{.Port}} check
+  {{end}}
