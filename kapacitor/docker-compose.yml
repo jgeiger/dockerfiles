@@ -1,0 +1,19 @@
+version: "2"
+volumes:
+  influxdbdata:
+  kapacitordata:
+services:
+  influxdb:
+    image: jgeiger/influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "7777/udp:7777/udp"
+    volumes:
+      - influxdbdata:/var/lib/influxdb/
+  kapacitor:
+    image: jgeiger/kapacitor
+    ports:
+      - "9092:9092"
+    volumes:
+      - kapacitordata:/var/lib/kapacitor/
