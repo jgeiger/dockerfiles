@@ -3,7 +3,7 @@ volumes:
   influxdbdata:
 services:
   influxdb:
-    image: jgeiger/influxdb-ubuntu
+    image: jgeiger/influxdb
     ports:
       - "8083:8083"
       - "8086:8086"
