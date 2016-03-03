@@ -21,12 +21,9 @@ RUN apt-get -qq -y update \
       libxslt1-dev \
       libyaml-dev \
       zlib1g-dev \
-      && locale-gen en_US \
-      && echo "LANG=en_US.UTF-8" > /etc/default/locale \
-      && rm /bin/sh && ln -s /bin/bash /bin/sh \
       && apt-get autoremove \
-      && apt-get clean
-      # && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # install ruby gem requires
 RUN wget http://ftp.ruby-lang.org/pub/ruby/$RUBY_MINOR_VERSION/ruby-$RUBY_TEENY_VERSION.tar.gz \
