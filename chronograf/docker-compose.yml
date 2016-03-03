@@ -1,0 +1,22 @@
+version: "2"
+volumes:
+  influxdbdata:
+  chronografdata:
+services:
+  influxdb:
+    image: jgeiger/influxdb:ubuntu
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "7777/udp:7777/udp"
+    volumes:
+      - influxdbdata:/var/lib/influxdb/
+  chronograf:
+    image: jgeiger/chronograf
+    ports:
+      - "10000:10000"
+    environment:
+      CHRONOGRAF_BIND: 0.0.0.0:10000
+      CHRONOGRAF_LOCAL_DATABASE: /data/chronograf.db
+    volumes:
+      - chronografdata:/data/
