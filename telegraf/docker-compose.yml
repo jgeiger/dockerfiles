@@ -12,6 +12,8 @@ services:
       - influxdbdata:/var/lib/influxdb/
   telegraf:
     image: jgeiger/telegraf
+    depends_on:
+      - influxdb
     command:
       - "telegraf"
       - "-config"
