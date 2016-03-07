@@ -24,6 +24,6 @@ RUN chmod +x /entrypoint.sh
 
 WORKDIR /opt/chronograf
 
-ENTRYPOINT [ "/tini", "--", "/entrypoint.sh"]
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
 
 CMD [ "/opt/chronograf/chronograf" ]

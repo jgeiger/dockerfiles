@@ -2,7 +2,7 @@ FROM jgeiger/alpine
 MAINTAINER jgeiger@gmail.com
 
 ENV CONSUL_VERSION=0.6.3 \
-    GLIBC_VERSION=2.22-r8
+    GLIBC_VERSION=2.23-r1
 ENV CONSUL_FILE=consul_${CONSUL_VERSION}_linux_amd64.zip \
     GLIBC_FILE=glibc-${GLIBC_VERSION}.apk
 
@@ -21,7 +21,8 @@ RUN addgroup -S consul && adduser -S -G consul consul \
       && rm -f $CONSUL_FILE \
       && chown consul:consul /data \
       && chown consul:consul /config \
-      && apk del curl \
+      && apk del \
+      curl \
       && rm -rf /tmp/$GLIBC_FILE /var/cache/apk/*
 
 WORKDIR /data

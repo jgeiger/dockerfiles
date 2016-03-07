@@ -7,6 +7,7 @@ ENV CONFIGURE_OPTS=--disable-install-doc \
                    RUBY_TEENY_VERSION=2.3.0
 
 USER root
+
 WORKDIR /tmp
 
 RUN apt-get -qq -y update \
@@ -41,7 +42,8 @@ RUN rm -rf /usr/local/bin/rake \
         bundler \
         zeus
 
-USER devops
-WORKDIR /home/devops
+USER $USERNAME
 
-CMD ["irb"]
+WORKDIR $HOME
+
+CMD [ "bash" ]

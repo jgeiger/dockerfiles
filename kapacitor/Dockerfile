@@ -10,9 +10,7 @@ USER root
 
 WORKDIR /tmp
 
-RUN wget --quiet --output-document /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64" \
-      && chmod +x /usr/local/bin/gosu \
-      && wget --quiet https://s3.amazonaws.com/kapacitor/${KAPACITOR_FILE} \
+RUN wget --quiet https://s3.amazonaws.com/kapacitor/${KAPACITOR_FILE} \
       && apt-get -qq -y update \
       && dpkg -i ${KAPACITOR_FILE} \
       && apt-get autoremove \
@@ -24,6 +22,6 @@ RUN chmod +x /entrypoint.sh
 
 WORKDIR /opt/kapacitor
 
-ENTRYPOINT [ "/tini", "--", "/entrypoint.sh"]
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
 
 CMD [ "kapacitord" ]

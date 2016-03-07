@@ -5,11 +5,16 @@ EXPOSE 3000
 
 USER root
 
-RUN apt-get -qq -y update \
+WORKDIR /tmp
+
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list \
+      && wget --quiet https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - \
+      && apt-get -qq -y update \
       && apt-get install -qq -y --no-install-recommends \
       libpq-dev \
       nodejs \
       npm \
+      postgresql-client \
       sqlite3 \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -17,13 +22,13 @@ RUN apt-get -qq -y update \
 COPY docker-entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p /app \
-      && chown -R devops /app \
+      && chown -R $USERNAME /app \
       && chmod +x /entrypoint.sh
 
-USER devops
+USER $USERNAME
 
 WORKDIR /app
 
-ENTRYPOINT [ "/tini", "--", "/entrypoint.sh" ]
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh" ]
 
 CMD ["bundle", "exec", "rails", "server"]

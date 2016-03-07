@@ -24,6 +24,6 @@ RUN chmod +x /entrypoint.sh
 
 WORKDIR /var/lib/influxdb
 
-ENTRYPOINT [ "/tini", "--", "/entrypoint.sh"]
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
 
 CMD [ "influxd" ]

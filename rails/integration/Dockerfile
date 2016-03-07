@@ -13,6 +13,8 @@ EXPOSE 5900
 
 USER root
 
+WORKDIR /tmp
+
 #===============
 # Google Chrome
 #===============
@@ -81,9 +83,11 @@ RUN apt-get update -qqy \
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-USER devops
+USER $USERNAME
 
-RUN mkdir -p ~/.vnc \
-  && x11vnc -storepasswd secret ~/.vnc/passwd
+RUN mkdir -p $HOME/.vnc \
+  && x11vnc -storepasswd secret $HOME/.vnc/passwd
 
-CMD ["bundle", "exec", "rspec"]
+WORKDIR $HOME
+
+CMD [ "bundle", "exec", "rspec" ]

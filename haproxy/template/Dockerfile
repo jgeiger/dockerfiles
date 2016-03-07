@@ -15,7 +15,8 @@ RUN addgroup -S haproxy && adduser -S -G haproxy haproxy \
       && unzip /tmp/consul_template.zip \
       && mv consul-template /usr/bin \
       && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf \
-      && apk del curl \
+      && apk del \
+      curl \
       && rm -rf /var/cache/apk/* /tmp/*
 
 VOLUME ["/config"]

@@ -2,12 +2,14 @@ FROM ubuntu:14.04
 MAINTAINER jgeiger@gmail.com
 
 ENV DEBIAN_FRONTEND=noninteractive \
-                    TINI_VERSION=v0.9.0
+                    TINI_VERSION=v0.9.0 \
+                    GOSU_VERSION=1.7 \
+                    USERNAME=devops
+ENV HOME=/home/$USERNAME
 
-# Add Tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
+USER root
+
+WORKDIR /tmp
 
 RUN apt-get -qq -y update \
       && apt-get -qq -y upgrade \
@@ -28,16 +30,25 @@ RUN apt-get -qq -y update \
       sudo \
       unzip \
       wget \
+      && wget --quiet --output-document /usr/local/bin/tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini \
+      && chmod +x /usr/local/bin/tini \
+      && wget --quiet --output-document /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
+      && chmod +x /usr/local/bin/gosu \
       && locale-gen en_US \
       && echo "LANG=en_US.UTF-8" > /etc/default/locale \
       && rm /bin/sh \
       && ln -s /bin/bash /bin/sh \
-      && useradd --create-home --shell /bin/bash devops \
-      && echo "devops ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-      && chown -R devops:devops /usr/local \
+      && useradd --create-home --shell /bin/bash $USERNAME \
+      && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+      && chown -R $USERNAME:$USERNAME /usr/local \
       && apt-get autoremove \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-USER devops
-WORKDIR /home/devops
+USER $USERNAME
+
+WORKDIR $HOME
+
+ENTRYPOINT ["tini", "--"]
+
+CMD [ "bash" ]
