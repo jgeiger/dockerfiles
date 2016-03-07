@@ -83,6 +83,14 @@ RUN apt-get update -qqy \
     fluxbox \
   && rm -rf /var/lib/apt/lists/*
 
+#=========
+# firefox
+#=========
+RUN apt-get update -qqy \
+  && apt-get -qqy install \
+    firefox \
+  && rm -rf /var/lib/apt/lists/*
+
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
