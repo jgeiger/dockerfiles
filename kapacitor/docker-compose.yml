@@ -13,6 +13,8 @@ services:
       - influxdbdata:/var/lib/influxdb/
   kapacitor:
     image: jgeiger/kapacitor
+    depends_on:
+      - influxdb
     ports:
       - "9092:9092"
     volumes:
