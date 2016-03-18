@@ -1,7 +1,7 @@
 FROM jgeiger/alpine
 MAINTAINER jgeiger@gmail.com
 
-ENV INFLUXDB_VERSION=influxdb-0.10.0-1 \
+ENV INFLUXDB_VERSION=influxdb-0.10.3-1 \
     GLIBC_VERSION=2.23-r1
 ENV INFLUXDB_FILE=${INFLUXDB_VERSION}_linux_amd64 \
     GLIBC_FILE=glibc-${GLIBC_VERSION}.apk
