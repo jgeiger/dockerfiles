@@ -1,7 +1,7 @@
 FROM jgeiger/ubuntu
 MAINTAINER jgeiger@gmail.com
 
-ENV TELEGRAF_VERSION=telegraf_0.10.4.1-1
+ENV TELEGRAF_VERSION=telegraf_0.11.1-1
 ENV TELEGRAF_FILE=${TELEGRAF_VERSION}_amd64.deb
 
 USER root
