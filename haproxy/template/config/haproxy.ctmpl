@@ -46,7 +46,6 @@ frontend https
 backend webapp
   balance roundrobin
   option forwardfor header X-Real-IP
-  option forwardfor header X-Real-IP
   http-request set-header X-Forwarded-Port %[dst_port]
   http-request add-header X-Forwarded-Proto https if { ssl_fc }
   option http-server-close
