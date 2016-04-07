@@ -4,13 +4,10 @@ MAINTAINER jgeiger@gmail.com
 #============================
 # Some configuration options
 #============================
-ENV SCREEN_WIDTH=1280 \
-                 SCREEN_HEIGHT=1024 \
-                 DISPLAY=0:0 \
-                 VNC_DISPLAY=:0 \
-                 DBUS_SESSION_BUS_ADDRESS=/dev/null \
-                 CHROME_DRIVER_VERSION=2.21 \
-                 USER=$USERNAME
+ENV SCREEN_WIDTH 1024
+ENV SCREEN_HEIGHT 768
+ENV SCREEN_DEPTH 16
+ENV DISPLAY :99.0
 
 EXPOSE 5900
 
@@ -44,6 +41,15 @@ RUN wget --no-verbose -O /tmp/chromedriver_linux64.zip http://chromedriver.stora
   && chmod 755 /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
   && ln -fs /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver
 
+#=============
+# VNC and Xvfb
+#=============
+RUN apt-get update -qqy \
+  && apt-get -qqy install \
+    x11vnc \
+    xvfb \
+  && rm -rf /var/lib/apt/lists/*
+
 #=================
 # Locale settings
 #=================
@@ -69,14 +75,6 @@ RUN apt-get update -qqy \
   && rm -rf /var/lib/apt/lists/*
 
 #=========
-# firefox
-#=========
-RUN apt-get update -qqy \
-  && apt-get -qqy install \
-    firefox \
-  && rm -rf /var/lib/apt/lists/*
-
-#=========
 # fluxbox
 # A fast, lightweight and responsive window manager
 #=========
@@ -85,15 +83,13 @@ RUN apt-get update -qqy \
     fluxbox \
   && rm -rf /var/lib/apt/lists/*
 
-#===========
-# xtightvnc
-# Framebuffer-based VNC server
-#===========
+#=========
+# firefox
+#=========
 RUN apt-get update -qqy \
-  && apt-get -qqy install\
-    tightvncserver \
+  && apt-get -qqy install \
+    firefox \
   && rm -rf /var/lib/apt/lists/*
-
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
@@ -101,8 +97,7 @@ RUN chmod +x /entrypoint.sh
 USER $USERNAME
 
 RUN mkdir -p $HOME/.vnc \
-  && echo -e 'secret' | vncpasswd -f > $HOME/.vnc/passwd \
-  && chmod 600 $HOME/.vnc/passwd
+  && x11vnc -storepasswd secret $HOME/.vnc/passwd
 
 WORKDIR $HOME
 
